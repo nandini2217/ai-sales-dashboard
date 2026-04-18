@@ -1,19 +1,65 @@
-# AI-POWERED SALES DASHBOARD WITH AUTOMATED INSIGHTS
+🚀 AI-Powered Sales Dashboard with Automated Insights
 
-An end-to-end data analytics project using Python , SQL , Power BI, and AI to automate business insight generation from sales data.
+An end-to-end data analytics + AI project that automates business insight generation from raw sales data using Python, SQL, Power BI, and Generative AI.
 
-# PROJECT STAGES
+This project demonstrates how modern data workflows can move beyond dashboards to automated decision-making insights.
 
--[] Stage 1 : Project setup and dataset
 
--[] Stage 2 : Data cleaning and transformation
+📌 Problem Statement
 
--[] Stage 3 : AI insight generation
+Businesses generate huge amounts of sales data but struggle to:
 
--[] Stage 4 : Power BI dashboard
+Extract meaningful insights quickly
+Monitor performance in real-time
+Make data-driven decisions without manual analysis
 
--[] Stage 5 : Automated reporting pipeline
+👉 This project solves that by building a fully automated analytics pipeline.
 
-# DATASET
 
-Superstore Sales Dataset - 100k+ reatil transactions across regions and categories.
+📈 Dashboard Preview
+
+
+
+📧 Automated Report Preview
+
+
+
+
+
+📂 Project Architecture
+
+Raw Dataset (CSV)
+        ↓
+Data Cleaning (Python)
+        ↓
+SQL Analysis / Feature Engineering
+        ↓
+Clean Dataset (superstore_cleaned.csv)
+        ↓
+Power BI Dashboard
+        ↓
+AI Insight Generation (GPT API)
+        ↓
+Automated Report (Text + Email)
+
+
+Automation Workflow
+Update dataset (superstore_cleaned.csv)
+Run: python auto_report.py
+✔ New metrics generated
+✔ AI insights updated
+✔ Email sent automatically
+✔ Power BI → Click Refresh → Dashboard updated
+
+📌 Business Impact
+
+This project helps organizations:
+
+Reduce manual reporting effort
+Get instant insights
+Improve decision-making speed
+Identify trends and opportunities faster
+
+⭐ If you like this project
+
+Give it a ⭐ on GitHub and feel free to connect!
