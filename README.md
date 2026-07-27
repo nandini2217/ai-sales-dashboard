@@ -1,41 +1,82 @@
+# Sales Analytics & Automated Insight Pipeline
 
-# 🚀 AI-Powered Sales Dashboard with Automated Insights
+An end-to-end analytics pipeline on the Superstore sales dataset: data
+cleaning and validation in pandas, a Power BI dashboard for exploration, and
+a small automation layer that turns computed metrics into a plain-English
+report via an LLM and delivers it by email.
 
-An end-to-end data analytics and AI pipeline that transforms raw sales data into actionable business intelligence. This project moves beyond static visuals by using **Generative AI** to automate executive summaries and report delivery.
+## Tools
 
------
+Python (pandas, matplotlib, seaborn) · SQL-style aggregation in pandas ·
+Power BI · Groq API (Llama 3.3) · pytest
 
-## 📌 Problem Statement
+## Data Source
 
-In modern business environments, data volume is rarely the issue—**speed to insight** is. Many organizations struggle with:
+[Superstore Sales dataset](https://www.kaggle.com/datasets/vivek468/superstore-dataset-final)
+— a widely-used public retail dataset, included in `data/`. This project's
+goal wasn't to prove the data was messy (it isn't — see below), but to build
+a defensible metrics pipeline and a working automation layer on top of it.
 
-  * **Manual Bottlenecks:** Spending hours cleaning data and writing weekly summaries.
-  * **Static Reporting:** Dashboards that show *what* happened but not *why* or *what to do next*.
-  * **Delayed Decisions:** Human-dependent analysis cycles that lag behind real-time market changes.
+## Key Findings
 
-**The Solution:** A fully automated pipeline that cleans data, updates visuals, generates AI-driven commentary, and notifies stakeholders via email.
+**1. Discount depth, not category, is the main driver of unprofitable orders.**
+Discount and profit margin are strongly negatively correlated (**r = -0.86**).
+Orders discounted 30% or more make up only ~14% of all orders but account
+for **87% of total losses** ($135K of $156K). Average margin turns negative
+once a discount passes roughly 20%.
 
------
+**2. Furniture is the only structurally unprofitable category**, driven
+almost entirely by three sub-categories — Tables, Bookcases, and Supplies —
+which lose money even before accounting for heavy discounting.
 
-## 📂 Project Architecture
+**3. Technology is the strongest performer** by both sales and profit,
+suggesting discount policy there could be looser without risking margin,
+while Furniture discounting needs tighter control.
 
-The workflow follows a modular data engineering pattern:
+**4. 18.7% of all orders lose money.** That's a large enough share that
+discount approval — not occasional pricing mistakes — looks like the
+underlying cause, not an edge case.
 
-1.  **Ingestion:** Raw `CSV` dataset (Superstore Sales).
-2.  **Processing:** `Python (Pandas)` for data cleaning and transformation.
-3.  **Analysis:** `SQL` for feature engineering and complex aggregations.
-4.  **Visualization:** `Power BI` for interactive, drill-down exploration.
-5.  **Intelligence:** `GPT API` analyzes processed metrics to generate natural language insights.
-6.  **Delivery:** Automated email reports sent via `SMTP`.
+See `data/notebooks/01_data_cleaning.ipynb` for the full analysis, including
+the data quality checks that back these numbers.
 
------
+## Data Quality Checks Performed
 
-## 📈 Dashboard Preview
+Before trusting any metric, the cleaning notebook explicitly checks for:
+duplicate rows (none found), missing values (none found), `Row ID`
+uniqueness as a primary key (confirmed), and out-of-range values in Sales,
+Quantity, and Discount (none found). This dataset happens to be clean at
+the source — the point of running these checks isn't to manufacture a
+cleaning story, it's to *verify* that before computing anything downstream,
+rather than assume it.
 
-## 📈 Dashboard Deep-Dive
+## The Automation Layer
 
-<details>
-<summary><b>🔍 Click to view all 4 Dashboard Views</b></summary>
+`scripts/metrics.py` computes the business metrics above and builds an LLM
+prompt from them; `scripts/insight_generator.py` runs that once and saves
+the report; `scripts/autoreport.py` does the same on a schedule and emails
+the result. To be precise about what the "AI" part actually does: it turns
+already-computed statistics into readable prose and recommendations — the
+analysis itself (discount correlation, loss-making sub-categories, etc.) is
+plain pandas, not the model guessing at the data.
+
+python scripts/insight_generator.py # generate + save a report
+python scripts/autoreport.py # generate, save, and email a report
+
+## Setup
+pip install -r requirements.txt
+cp .env.example .env # then fill in your own GROQ_API_KEY, EMAIL_SENDER, EMAIL_PASSWORD
+`EMAIL_PASSWORD` should be a Gmail [app password](https://myaccount.google.com/apppasswords),
+not your regular account password.
+
+## Testing
+Unit tests cover `scripts/metrics.py` against a small hand-built dataset
+with known expected outputs (total sales, profit margin, top region,
+loss-making sub-categories, etc.), so a change to the metric logic that
+breaks a number is caught immediately rather than only showing up in a
+generated report.
+
+## Dashboard Preview
 
 ### 1. Main Executive Dashboard
 ![Executive Overview](output/dashboard_page1.png)
@@ -49,77 +90,31 @@ The workflow follows a modular data engineering pattern:
 ### 4. Automated AI Insights Module
 ![AI Insights](output/dashboard_page4.png)
 
-</details>
+## Automated Email Report
 
+`autoreport.py` sends a formatted HTML email with the key metrics table and
+the AI-generated narrative report.
 
-### Key Features:
+![Email preview 1](output/ss1.png)
+![Email preview 2](output/ss2.png)
 
-  * **Real-time KPIs:** Total Sales, Profit Margins, and Year-over-Year (YoY) growth.
-  * **Trend Analysis:** Time-series forecasting for inventory planning.
-  * **Geographic Insights:** Heatmaps identifying high-performing regions.
+## Project Structure
+ai-sales-dashboard/
+├── data/
+│ ├── Sample - Superstore.csv # raw source data
+│ ├── superstore_cleaned.csv # output of the cleaning notebook
+│ └── notebooks/
+│ └── 01_data_cleaning.ipynb # cleaning, validation, and EDA
+├── output/ # charts, dashboard screenshots, generated reports
+├── scripts/
+│ ├── metrics.py # shared metric calculations + LLM prompt
+│ ├── insight_generator.py # one-off report generation
+│ └── autoreport.py # scheduled report generation + email
+├── tests/
+│ └── test_metrics.py # unit tests for metrics.py
+├── sales_dashboard.pbix # Power BI dashboard
+├── requirements.txt
+└── .env.example
 
------
-
-## 📧 Automated AI Report
-
-Instead of just looking at graphs, stakeholders receive an automated email summary that looks like this:
----
-
-## 📧 Automated AI Report Delivery
-
-The final step of the pipeline automatically triggers an email to stakeholders. This contains a natural language summary generated by the AI, highlighting trends that require immediate attention.
-
-## 📧 Automated AI Report Delivery
-
-The final step of the pipeline automatically triggers an email to stakeholders. This contains a natural language summary generated by the AI, highlighting trends that require immediate attention.
-
-<p align="center">
-  <img src="output/ss1.png" width="45%" />
-  <img src="output/ss2.png" width="45%" />
-</p>
-
-> **Key Automation Logic:** The `auto_report.py` script parses the latest SQL results, sends them to the GPT API for summarization, and uses the `SMTP` library to dispatch this formatted HTML email.
-
------
-
-## ⚙️ Automation Workflow
-
-To update the entire system, simply update the source file and run:
-
-```bash
-python auto_report.py
-```
-
-| Step | Action | Outcome |
-| :--- | :--- | :--- |
-| **1** | Update Dataset | New raw data added to `data/` |
-| **2** | Run Script | Python cleans data & triggers GPT API |
-| **3** | AI Generation | Executive summary generated based on new trends |
-| **4** | Notification | Stakeholders receive automated email |
-| **5** | Refresh BI | Click 'Refresh' in Power BI to sync visuals |
-
------
-
-## 🛠️ Tech Stack
-
-  * **Language:** Python (Pandas, NumPy, SQLAlchemy)
-  * **Database:** SQL (PostgreSQL/SQLite) for structured querying
-  * **BI Tool:** Power BI / DAX
-  * **AI Model:** OpenAI GPT-4 API (via LangChain or OpenAI Python SDK)
-  * **Automation:** SMTP for Email, GitHub Actions (optional for scheduling)
-
------
-
-## 📌 Business Impact
-
-  * **Efficiency:** Reduces manual reporting effort by \~80%.
-  * **Speed:** Transforms raw data to executive insights in under 60 seconds.
-  * **Accuracy:** Eliminates human error in data cleaning and calculation.
-  * **Proactive Growth:** Highlights anomalies and opportunities that might be missed by the naked eye.
-
-
------
-
-### ⭐ Support
-
-If you find this project helpful, please give it a **Star** and connect with me on [LinkedIn](https://www.google.com/search?q=your-profile-link)\!
+## Status
+✅ Complete
