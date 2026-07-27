@@ -78,41 +78,59 @@ generated report.
 
 ## Dashboard Preview
 
-### 1. Main Executive Dashboard
-![Executive Overview](output/dashboard_page1.png)
-
-### 2. Regional Sales Breakdown
-![Regional Analysis](output/dashboard_page2.png)
-
-### 3. Category & Product Trends
-![Product Performance](output/dashboard_page3.png)
-
-### 4. Automated AI Insights Module
-![AI Insights](output/dashboard_page4.png)
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <b>1. Main Executive Dashboard</b><br>
+      <img src="output/dashboard_page1.png" alt="Executive Overview" width="100%">
+    </td>
+    <td align="center" width="50%">
+      <b>2. Regional Sales Breakdown</b><br>
+      <img src="output/dashboard_page2.png" alt="Regional Analysis" width="100%">
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <b>3. Category & Product Trends</b><br>
+      <img src="output/dashboard_page3.png" alt="Product Performance" width="100%">
+    </td>
+    <td align="center" width="50%">
+      <b>4. Automated AI Insights Module</b><br>
+      <img src="output/dashboard_page4.png" alt="AI Insights" width="100%">
+    </td>
+  </tr>
+</table>
 
 ## Automated Email Report
 
-`autoreport.py` sends a formatted HTML email with the key metrics table and
-the AI-generated narrative report.
+`autoreport.py` sends a formatted HTML email with the key metrics table and the AI-generated narrative report.
 
-![Email preview 1](output/ss1.png)
-![Email preview 2](output/ss2.png)
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <img src="output/ss1.png" alt="Email preview 1" width="100%">
+    </td>
+    <td align="center" width="50%">
+      <img src="output/ss2.png" alt="Email preview 2" width="100%">
+    </td>
+  </tr>
+</table>
 
 ## Project Structure
 ai-sales-dashboard/
 ├── data/
-│ ├── Sample - Superstore.csv # raw source data
-│ ├── superstore_cleaned.csv # output of the cleaning notebook
-│ └── notebooks/
-│ └── 01_data_cleaning.ipynb # cleaning, validation, and EDA
-├── output/ # charts, dashboard screenshots, generated reports
+│   ├── Sample - Superstore.csv      # raw source data
+│   ├── superstore_cleaned.csv       # output of the cleaning notebook
+│   └── notebooks/
+│       └── 01_data_cleaning.ipynb   # cleaning, validation, and EDA
+├── output/                          # charts, dashboard screenshots, generated reports
 ├── scripts/
-│ ├── metrics.py # shared metric calculations + LLM prompt
-│ ├── insight_generator.py # one-off report generation
-│ └── autoreport.py # scheduled report generation + email
+│   ├── metrics.py                   # shared metric calculations + LLM prompt
+│   ├── insight_generator.py         # one-off report generation
+│   └── autoreport.py                # scheduled report generation + email
 ├── tests/
-│ └── test_metrics.py # unit tests for metrics.py
-├── sales_dashboard.pbix # Power BI dashboard
+│   └── test_metrics.py              # unit tests for metrics.py
+├── sales_dashboard.pbix             # Power BI dashboard
 ├── requirements.txt
 └── .env.example
 
