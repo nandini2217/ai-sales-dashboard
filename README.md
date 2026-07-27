@@ -117,6 +117,7 @@ generated report.
 </table>
 
 ## Project Structure
+```text
 ai-sales-dashboard/
 ├── data/
 │   ├── Sample - Superstore.csv      # raw source data
